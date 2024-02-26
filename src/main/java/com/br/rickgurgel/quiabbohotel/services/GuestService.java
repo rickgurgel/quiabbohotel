@@ -26,22 +26,19 @@ public class GuestService {
         ));
     }
 
-    public String insert(Guest guest){
-        guestRepository.save(guest);
-        return "Guest inserted" + guest.toString();
+    public Guest insert(Guest guest){
+        return guestRepository.save(guest);
     }
 
-    public String delete(UUID id){
+    public void delete(UUID id){
         findById(id);
-        delete(id);
-        return "Guest deleted" + guestRepository.findById(id);
+        guestRepository.deleteById(id);
     }
 
-    private String update(Guest guest){
+    public Guest update(Guest guest){
         Optional<Guest> newGuest = findById(guest.getId());
         updateGuest(newGuest, guest);
-        guestRepository.save(newGuest.get());
-        return "Guest updated" + newGuest.get().toString();
+        return guestRepository.save(newGuest.get());
     }
 
     private void updateGuest(Optional<Guest> newGuest, Guest guest){
