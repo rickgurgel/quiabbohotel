@@ -7,8 +7,7 @@ public class FamilyRoomStay implements CalcStay {
 
     @Override
     public Double calculateStay(Reservation r){
-        return r.getRoomType().getBasePrice()
-                * r.getCheckout().compareTo(r.getCheckin());
+        return 350.00 * r.getCheckout().compareTo(r.getCheckin());
     }
 
 }

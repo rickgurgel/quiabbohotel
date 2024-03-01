@@ -1,6 +1,7 @@
 package com.br.rickgurgel.quiabbohotel.services;
 
 import com.br.rickgurgel.quiabbohotel.entities.Reservation;
+import com.br.rickgurgel.quiabbohotel.interfaces.CalcStay;
 import com.br.rickgurgel.quiabbohotel.repositories.ReservationRepository;
 import com.br.rickgurgel.quiabbohotel.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    private CalcStay calcStay;
+
     public List<Reservation> findAll(){
         return reservationRepository.findAll();
     }
@@ -27,9 +30,9 @@ public class ReservationService {
                 ));
     }
 
-    public String insert(Reservation reservation){
-        reservationRepository.save(reservation);
-        return "Reservation made: " + reservation.toString();
+    public Reservation insert(Reservation reservation){
+        reservation.setStayValue(calcStay.calculateStay(reservation));
+        return reservationRepository.save(reservation);
     }
 
     public String update(Reservation reservation){

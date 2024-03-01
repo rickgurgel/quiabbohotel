@@ -7,8 +7,7 @@ public class PresidentialRoomStay implements CalcStay {
 
     @Override
     public Double calculateStay(Reservation r){
-        return r.getRoomType().getBasePrice()
-                * r.getCheckout().compareTo(r.getCheckin());
+        return 600.00 * r.getCheckout().compareTo(r.getCheckin());
     }
 
 }

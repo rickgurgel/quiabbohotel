@@ -27,4 +27,10 @@ public class Guest {
     private String email;
     private String phone;
 
+    public Guest(String name, String socialRegister, String email, String phone) {
+        this.name = name;
+        this.socialRegister = socialRegister;
+        this.email = email;
+        this.phone = phone;
+    }
 }

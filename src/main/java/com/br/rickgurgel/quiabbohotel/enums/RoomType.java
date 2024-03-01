@@ -1,20 +1,24 @@
 package com.br.rickgurgel.quiabbohotel.enums;
 
-import lombok.Getter;
+import com.br.rickgurgel.quiabbohotel.impl.CoupleRoomStay;
+import com.br.rickgurgel.quiabbohotel.impl.FamilyRoomStay;
+import com.br.rickgurgel.quiabbohotel.impl.SingleRoomStay;
+import com.br.rickgurgel.quiabbohotel.interfaces.CalcStay;
 
-@Getter
 public enum RoomType {
-    SINGLE(200.0, 30),
-    COUPLE(350.0, 25),
-    FAMILY(500.0, 10),
-    PRESIDENTIAL(750.0, 5);
 
-    private final Double basePrice;
-    private final Integer availability;
+    SINGLE(new SingleRoomStay()),
+    COUPLE(new CoupleRoomStay()),
+    FAMILY(new FamilyRoomStay()),
+    PRESIDENTIAL(new FamilyRoomStay());
 
-    RoomType(Double basePrice, Integer availability){
-        this.basePrice = basePrice;
-        this.availability = availability;
+    private final CalcStay calcStay;
+
+    RoomType(CalcStay calcStay) {
+        this.calcStay = calcStay;
     }
 
+    public CalcStay getCalcStay(){
+        return calcStay;
+    }
 }

@@ -29,4 +29,11 @@ public class Reservation {
     private LocalDate checkout;
     private Double stayValue;
 
+    public Reservation(Guest guest, RoomType roomType, LocalDate checkin, LocalDate checkout) {
+        this.guest = guest;
+        this.roomType = roomType;
+        this.checkin = checkin;
+        this.checkout = checkout;
+    }
+
 }
