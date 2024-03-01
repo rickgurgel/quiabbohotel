@@ -1,6 +1,7 @@
 package com.br.rickgurgel.quiabbohotel.entities;
 
 import com.br.rickgurgel.quiabbohotel.enums.RoomType;
+import com.br.rickgurgel.quiabbohotel.services.CalculateStay;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,10 +20,9 @@ import java.util.UUID;
 public class Reservation {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @OneToOne
+    @ManyToOne
     private Guest guest;
     private RoomType roomType;
     private LocalDate checkin;

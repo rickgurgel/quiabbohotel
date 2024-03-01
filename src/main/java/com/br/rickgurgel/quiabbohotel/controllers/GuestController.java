@@ -3,13 +3,14 @@ package com.br.rickgurgel.quiabbohotel.controllers;
 import com.br.rickgurgel.quiabbohotel.entities.Guest;
 import com.br.rickgurgel.quiabbohotel.services.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value="/guest")
@@ -25,31 +26,31 @@ public class GuestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Guest> findById(@PathVariable UUID id){
-        return ResponseEntity.ok().body(findById(id).getBody());
+    public ResponseEntity<Guest> findById(@PathVariable Long id){
+        Guest guest = guestService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Guest not found"));
+        return ResponseEntity.ok().body(guest);
     }
 
-    @PutMapping("/insert-guest")
-    public ResponseEntity<Void> insert(@RequestBody Guest guest){
-        guestService.insert(guest);
-        URI uri = ServletUriComponentsBuilder
+    @PostMapping("/insert") // Change to @PostMapping
+    public ResponseEntity<Guest> insert(@RequestBody Guest guest){ // Change return type to ResponseEntity<Guest>
+        Guest savedGuest = guestService.insert(guest);
+        URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(guest.getId()).toUri();
-        return ResponseEntity.noContent().build();
+                .buildAndExpand(savedGuest.getId()).toUri();
+        return ResponseEntity.created(location).body(savedGuest); // Return ResponseEntity with created location and saved guest
     }
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    @DeleteMapping("/{id}") // Change to @DeleteMapping
+    public ResponseEntity<Void> delete(@PathVariable Long id){ // Change return type to ResponseEntity<Void>
         guestService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@RequestBody Guest guest, @PathVariable UUID id){
-        Guest newGuest = findById(guest.getId()).getBody();
-        newGuest.setId(id);
-        newGuest = guestService.update(guest);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}") // Change to @PutMapping
+    public ResponseEntity<Guest> update(@RequestBody Guest guest, @PathVariable Long id){
+        Guest updatedGuest = guestService.update(guest, id);
+        return ResponseEntity.ok().body(updatedGuest);
     }
 }

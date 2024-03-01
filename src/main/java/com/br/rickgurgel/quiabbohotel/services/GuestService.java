@@ -4,11 +4,12 @@ import com.br.rickgurgel.quiabbohotel.entities.Guest;
 import com.br.rickgurgel.quiabbohotel.repositories.GuestRepository;
 import com.br.rickgurgel.quiabbohotel.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class GuestService {
@@ -20,31 +21,34 @@ public class GuestService {
         return guestRepository.findAll();
     }
 
-    public Optional<Guest> findById(UUID id){
-        return Optional.ofNullable(guestRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException("Guest not found")
-        ));
+    public Optional<Guest> findById(Long id){
+        return guestRepository.findById(id);
     }
 
     public Guest insert(Guest guest){
+        // You can directly return the saved guest
         return guestRepository.save(guest);
     }
 
-    public void delete(UUID id){
-        findById(id);
+    public void delete(Long id){
         guestRepository.deleteById(id);
     }
 
-    public Guest update(Guest guest){
-        Optional<Guest> newGuest = findById(guest.getId());
-        updateGuest(newGuest, guest);
-        return guestRepository.save(newGuest.get());
-    }
+    public Guest update(Guest guest, Long id){
+        // Check if the guest exists before updating
+        Optional<Guest> existingGuestOptional = guestRepository.findById(id);
+        if(existingGuestOptional.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Guest not found");
+        }
 
-    private void updateGuest(Optional<Guest> newGuest, Guest guest){
-        newGuest.get().setEmail(guest.getEmail());
-        newGuest.get().setName(guest.getName());
-        newGuest.get().setSocialRegister(guest.getSocialRegister());
-        newGuest.get().setPhone(guest.getPhone());
+        // Update the guest details
+        Guest existingGuest = existingGuestOptional.get();
+        existingGuest.setName(guest.getName());
+        existingGuest.setSocialRegister(guest.getSocialRegister());
+        existingGuest.setEmail(guest.getEmail());
+        existingGuest.setPhone(guest.getPhone());
+
+        // Save and return the updated guest
+        return guestRepository.save(existingGuest);
     }
 }

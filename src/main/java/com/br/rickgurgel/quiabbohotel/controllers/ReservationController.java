@@ -30,6 +30,7 @@ public class ReservationController {
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(reservation.getId()).toUri();
+        System.out.println(reservation);
         return ResponseEntity.created(uri).build();
     }
 }
